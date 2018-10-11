@@ -4,9 +4,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IdentityModel.Configuration;
-using System.IdentityModel.Metadata;
-using System.IdentityModel.Services.Configuration;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -25,8 +22,7 @@ namespace Sustainsys.Saml2.Configuration
         /// </summary>
         public SPOptions()
         {
-            systemIdentityModelIdentityConfiguration = new IdentityConfiguration(false);
-            MetadataCacheDuration = new TimeSpan(1, 0, 0);
+			MetadataCacheDuration = new XsdDuration(hours: 1);
             Compatibility = new Compatibility();
             OutboundSigningAlgorithm = XmlHelpers.GetDefaultSigningAlgorithmName();
             MinIncomingSigningAlgorithm = XmlHelpers.GetDefaultSigningAlgorithmName();
@@ -42,7 +38,6 @@ namespace Sustainsys.Saml2.Configuration
             {
                 throw new ArgumentNullException(nameof(configSection));
             }
-            systemIdentityModelIdentityConfiguration = new IdentityConfiguration(true);
 
             ReturnUrl = configSection.ReturnUrl;
             MetadataCacheDuration = configSection.Metadata.CacheDuration;
@@ -85,7 +80,7 @@ namespace Sustainsys.Saml2.Configuration
         /// Recommendation of cache refresh interval to those who reads our
         /// metadata.
         /// </summary>
-        public TimeSpan MetadataCacheDuration { get; set; }
+        public XsdDuration MetadataCacheDuration { get; set; }
 
         /// <summary>
         /// Maximum validity duration after fetch for those who reads our
@@ -110,7 +105,7 @@ namespace Sustainsys.Saml2.Configuration
                 if(value == null)
                 {
                     // Set the saved value, but don't trust it - still use a local var for the return.
-                    saml2PSecurityTokenHandler = value = new Saml2PSecurityTokenHandler(this);
+                    saml2PSecurityTokenHandler = value = new Saml2PSecurityTokenHandler();
                 }
 
                 return value;
@@ -216,7 +211,8 @@ namespace Sustainsys.Saml2.Configuration
             }
         }
 
-        readonly ICollection<AttributeConsumingService> attributeConsumingServices = new List<AttributeConsumingService>();
+        readonly ICollection<AttributeConsumingService> attributeConsumingServices
+			= new List<AttributeConsumingService>();
 
         /// <summary>
         /// Collection of attribute consuming services for the service provider.
@@ -226,19 +222,6 @@ namespace Sustainsys.Saml2.Configuration
             get
             {
                 return attributeConsumingServices;
-            }
-        }
-
-        private IdentityConfiguration systemIdentityModelIdentityConfiguration;
-
-        /// <summary>
-        /// The System.IdentityModel configuration to use.
-        /// </summary>
-        public IdentityConfiguration SystemIdentityModelIdentityConfiguration
-        {
-            get
-            {
-                return systemIdentityModelIdentityConfiguration;
             }
         }
 

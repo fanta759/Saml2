@@ -11,6 +11,6 @@ using System.Reflection;
 //      Patch Number
 //
 
-[assembly: AssemblyVersion("0.24.0")]
-[assembly: AssemblyFileVersion("0.24.0")]
-[assembly: AssemblyInformationalVersion("0.24.0")]
+[assembly: AssemblyVersion("2.1.0")]
+[assembly: AssemblyFileVersion("2.1.0")]
+[assembly: AssemblyInformationalVersion("2.1.0")]
